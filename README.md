@@ -44,7 +44,7 @@ First, you need to have a _callable_ in mind. A _callable_ is the method/task th
 
 - a Craft service method: `'service.method'`
 - a helper method from the Craft namespace: `'SomeHelper::method'`
-- a Craft task: `'DoSomethingTask'` _(more on this [later]([later](#walk-tasks-info))...)_
+- a Craft task: `'DoSomethingTask'` _(more on this [later](#walk-tasks-info)...)_
 - any public static method in the root namespace: `'SomeClass::method'`
 - any accessible custom function: `'myCustomMethod'`
 - any native PHP function, e.g. `'strtolower'`
