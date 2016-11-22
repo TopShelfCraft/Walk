@@ -85,7 +85,7 @@ public function myMethod( $element [, $index [, $userdata ]] )
 Let's start with an example of PHP's native `array_walk`:
 
 You could do this:
-```
+```php
 $myArray = ["Michael", "Aaron", "Andrew", "Brad", "Brandon"]
 
 foreach ($myArray as $key => $value)
@@ -94,7 +94,7 @@ foreach ($myArray as $key => $value)
 }
 ```
 But this is way prettier:
-```
+```php
 array_walk($myArray, 'strtolower');
 ```
 
@@ -103,7 +103,7 @@ These two examples accomplish the same thing: Afterwards, each string item in th
 **Now let's look at a _Crafty_ example.**
 
 You could do this:
-```
+```php
 $myEntries = craft()->elements->getCriteria(ElementType::Entry)->find();
 
 foreach ($myEntries as $entry)
@@ -112,7 +112,7 @@ foreach ($myEntries as $entry)
 }
 ```
 But this is tighter:
-```
+```php
 WalkHelper::craftyArrayWalk($myEntries, 'entries.saveEntry');
 ```
 
@@ -126,7 +126,7 @@ That's actually why I wrote this plugin: I needed a fast, convenient way to do a
 
 So, without further ado, I give you... the `walk` _CLI command_.
 
-```
+```shell
 php yiic walk [list] [callable] --[options]=blah --asTask
 ```
 
@@ -134,17 +134,17 @@ So, let's break that down:
 
 - `[list]` is either an element type identifier (`assets`, `entries`, etc.), or an element _IDs_ identifier (`assetIds`, `entryIds`, etc.).
 - `[callable]` is the method/task you want to run on each item, as described [above](#walk-callable-formats).
-- There are several supported `[options]`, described below.
+- There are several supported `[options]`, described [below](#walk-command-options).
 - The special (optional) `--asTask` option... I'll get to that [later](#walk-tasks-info).
 - The order of options is unimportant.
 
 If you want to re-save all your blog entries...
-```'
+```shell
 php yiic walk entries --section=blog --limit=null entries.save
 ```
 
 If you have a custom service method, and you want to run it once on each user:
-```
+```shell
 php yiic walk users --limit=null myService.myMethod
 ```
 
@@ -155,6 +155,7 @@ php yiic walk entryIds SomeHelper:methodThatOperatesOnAnId
 Tada!
 
 
+<a name="walk-command-options" id="walk-command-options"></a>
 ### Command options
 
 The following Element Criteria attributes can be set via CLI option:
@@ -186,7 +187,7 @@ There are a few ways **Walk** might help.
 
 #### 1. Schedule callables as Tasks using the CLI
 
-```
+```shell
 php yiic walk entries entries.saveEntry --asTask
 
 php yiic walk entryIds MyHelper::myMethod --asTask
@@ -201,7 +202,7 @@ In the Control Panel sidebar (or [Task Manager](https://github.com/boboldehampsi
 
 #### 2. Use a task as a _callable_ from the CLI
 
-```
+```shell
 php yiic walk assetIds ModifyMyAssetTask
 ```
 
@@ -211,7 +212,7 @@ The specified task should expect to receive an `id` setting containing the eleme
  
 #### 3. Use a Task as a _callable_ via the PHP methods
  
-```
+```php
 WalkHelper::spawnTasks('ModifyMyAsset', $elementsOrIds, $settings = [], $idParam = 'id')
 ```
 
