@@ -1,4 +1,4 @@
-# Environment Label
+# Walk
 
 _A Craft-aware variant of the `array_walk()` method, plus some console commands for extra convenience, to easily apply Craft service/helper/Task methods to a collection of elements._
 
