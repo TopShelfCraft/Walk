@@ -97,7 +97,7 @@ class WalkPlugin extends BasePlugin
 	 */
 	public function getReleaseFeedUrl()
 	{
-		return null;
+		return 'https://github.com/TopShelfCraft/Walk/raw/master/releases.json';
 	}
 
 
