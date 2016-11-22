@@ -75,7 +75,7 @@ $success = WalkHelper::craftyArrayWalk($elements, $callable, $userdata);
 The `$userdata` will be passed as the third parameter to the _callable_ method on each step.
 
 So, in technical terms, a _callable_ method has the following signature:
-```
+```php
 public function myMethod( $element [, $index [, $userdata ]] )
 ```
 
@@ -187,20 +187,24 @@ There are a few ways **Walk** might help.
 
 #### 1. Schedule callables as Tasks using the CLI
 
+You can use the special `--asTask` [command option](#walk-command-options) to schedule each walk step as a Task:
+
 ```shell
 php yiic walk entries entries.saveEntry --asTask
 
 php yiic walk entryIds MyHelper::myMethod --asTask
 ```
 
-This will invoke the callable once for each element or ID in the criteria, but it will do so from inside a Task
-— i.e. one task per element/step.
+This will still invoke the callable once for each element or ID in the criteria, but it will do so from inside a Task
+— i.e. one request per element/step.
 
 This is nice if you want to keep track of the queue progress, or if you want to be able to conveniently re-run any steps that fail due to an error.
 
 In the Control Panel sidebar (or [Task Manager](https://github.com/boboldehampsink/taskmanager)), these show up as `CallOnElement` and `CallOnId` tasks. 
 
-#### 2. Use a task as a _callable_ from the CLI
+#### 2. Use a Task as a _callable_ from the CLI
+
+You can also use any Task (from Craft or any installed plugin) as a callable in its own right: 
 
 ```shell
 php yiic walk assetIds ModifyMyAssetTask
@@ -225,9 +229,30 @@ You can supply an array of extra settings in the `$settings` argument, which wil
 The specified task should expect to receive an `id` setting containing the element ID. Alternatively, you can also change the name of the setting that will receive the ID of the element, using the `$idParam` argument.
 
 
+### Can I use this stuff with _any_ array? Does it _have_ to be elements/IDs?
+
+The console commands are designed to perform bulk actions on sets of Elements or IDs.
+
+However, if you're feeling clever, you can use the `craftyArrayWalk()` helper method, **with any array**.
+
+For example, if you have an array of email addresses, and a `processEmailAddress` service method that takes an email address as its first argument...
+
+```php
+$success = WalkHelper::craftyArrayWalk($emailAddresses, 'myService.processEmailAddress');
+```
+
+Or if you have that same list of email addresses and a custom _ProcessEmailAddressTask_ that expects an email address in the `emailAddress` setting...
+ 
+```php
+WalkHelper::spawnTasks('ProcessEmailAddress', $emailAddresses, $settings = [], $idParam = 'emailAddress')
+```
+
+If you want to make your own console command that walks through some other set (i.e. not Elements or Element IDs), just check out the source code of the _WalkCommand_. You'll find it pretty easy to copy/paste your way to success!
+
+
 ### This is great! I still have questions.
 
-Ask a question on StackExchange, and ping me with a URL via email or Slack.
+Ask a question on [StackExchange](http://craftcms.stackexchange.com/), and ping me with a URL via email or Slack.
 
 
 ### What are the system requirements?
