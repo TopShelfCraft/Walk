@@ -1,5 +1,13 @@
 [
 	{
+		"version": "0.2.0",
+		"downloadUrl": "https://github.com/TopShelfCraft/Walk/archive/0.2.0.zip",
+		"date": "2016-11-22T07:07:07",
+		"notes": [
+			"[Fixed] Fixed a bug where spawnTasks() only worked correctly with Elements or numeric items, rather than with any old array item as promised in the readme."
+		]
+	},
+	{
 		"version": "0.1.0",
 		"downloadUrl": "https://github.com/TopShelfCraft/Walk/archive/0.1.0.zip",
 		"date": "2016-11-21T07:07:07",
