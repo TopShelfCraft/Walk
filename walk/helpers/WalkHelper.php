@@ -88,7 +88,18 @@ class WalkHelper
 		foreach($elements as $el)
 		{
 
-			$id = $el->id ?? intval($el);
+			if ($el instanceof BaseElementModel)
+			{
+				$id = $el->id;
+			}
+			elseif (is_numeric($el))
+			{
+				$id = intval($el);
+			}
+			else
+			{
+				$id = $el;
+			}
 
 			if ($id)
 			{
