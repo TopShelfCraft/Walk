@@ -22,7 +22,7 @@ class WalkCommand extends BaseCommand
 	// Element criteria
 	public $id, $limit=7, $offset;
 	public $title, $slug, $relatedTo;
-	public $source, $sourceId, $kind, $filename, $folderId;
+	public $source, $sourceId, $kind, $filename, $folderId, $size;
 	public $group, $groupId;
 	public $authorGroup, $authorGroupId, $authorId, $locale, $section, $status;
 
@@ -37,7 +37,7 @@ class WalkCommand extends BaseCommand
 
 	private $_criteriaOptions = [
 		'id', 'limit', 'offset', 'title', 'slug', 'relatedTo',
-		'source', 'sourceId', 'kind', 'filename', 'folderId',
+		'source', 'sourceId', 'kind', 'filename', 'folderId', 'size',
 		'group', 'groupId',
 		'authorGroup', 'authorGroupId', 'authorId', 'locale', 'section', 'status',
 	];
@@ -208,7 +208,7 @@ class WalkCommand extends BaseCommand
 		{
 
 			$elements = $this->_getCriteria($type)->ids();
-			WalkPlugin::log("Applying [{$callable}] to " . count($elements) . " elements via tasks.");
+			WalkPlugin::log("Applying [{$callable}] to " . count($elements) . " elements via tasks.", LogLevel::Profile, true);
 			if (WalkHelper::spawnCallOnElementTasks($elements, $callable)) return 0;
 
 		}
@@ -219,7 +219,7 @@ class WalkCommand extends BaseCommand
 			craft()->config->maxPowerCaptain();
 
 			$elements = $this->_getCriteria($type)->find();
-			WalkPlugin::log("Applying [{$callable}] to " . count($elements) . " elements.");
+			WalkPlugin::log("Applying [{$callable}] to " . count($elements) . " elements.", LogLevel::Profile, true);
 			if (WalkHelper::craftyArrayWalk($elements, $callable)) return 0;
 
 		}
@@ -247,12 +247,12 @@ class WalkCommand extends BaseCommand
 
 		if ($this->asTask)
 		{
-			WalkPlugin::log("Applying [{$callable}] to " . count($ids) . " IDs via Tasks: \n" . print_r($ids, true));
+			WalkPlugin::log("Applying [{$callable}] to " . count($ids) . " IDs via Tasks: \n" . print_r($ids, true), LogLevel::Profile, true);
 			if (WalkHelper::spawnCallOnIdTasks($ids, $callable)) return 0;
 		}
 		else
 		{
-			WalkPlugin::log("Applying [{$callable}] to " . count($ids) . " IDs: \n" . print_r($ids, true));
+			WalkPlugin::log("Applying [{$callable}] to " . count($ids) . " IDs: \n" . print_r($ids, true), LogLevel::Profile, true);
 			if (WalkHelper::craftyArrayWalk($ids, $callable)) return 0;
 		}
 
@@ -269,7 +269,40 @@ class WalkCommand extends BaseCommand
 	 */
 	public function actionTest($args, $thing=null, $thing1=null, $thing2=null)
 	{
-		echo var_dump($args, $thing, $thing1, $thing2, $this->gopt);
+		echo var_dump($args, $thing, $thing1, $thing2);
+	}
+
+
+	/**
+	 * @param $args
+	 *
+	 * @return int
+	 */
+	public function actionCount($args=[], $type=null)
+	{
+
+		if (empty($type) && !empty($args[0]))
+		{
+			$type = $args[0];
+			if (in_array($type, array_keys($this->_elementTypes)))
+			{
+				$type = $this->_elementTypes[$args[0]];
+			}
+		}
+
+		if (empty($type))
+		{
+			echo "Please specify an element --type param.";
+			return 1;
+		}
+
+		$this->limit = 'null';
+		$count = $this->_getCriteria($type)->count();
+
+		echo "Found {$count} {$type} elements.";
+
+		return 0;
+
 	}
 
 
@@ -336,9 +369,14 @@ class WalkCommand extends BaseCommand
 			$attributes['limit'] = null;
 		}
 
+		if ($this->status == 'null' || $this->status == '*')
+		{
+			$attributes['status'] = null;
+		}
+
 		$criteria = craft()->elements->getCriteria($type, $attributes);
 
-		WalkPlugin::log("Using {$type} criteria: \n" . print_r($attributes, true));
+		WalkPlugin::log("Using {$type} criteria: \n" . print_r($attributes, true), LogLevel::Profile, true);
 
 		return $criteria;
 

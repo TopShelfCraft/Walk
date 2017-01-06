@@ -1,5 +1,16 @@
 [
 	{
+		"version": "0.4.0",
+		"downloadUrl": "https://github.com/TopShelfCraft/Walk/archive/0.4.0.zip",
+		"date": "2017-01-05T07:07:07",
+		"notes": [
+			"[Improved] Added `size` as a criteria option in the Walk CLI command.",
+			"[Improved] Added `status` as criteria option in the Walk CLI command, enabling commands/counts to be performed on elements with non-open statuses.",
+			"[Improved] Notices are logged as Profile-level so they won't clog up the logs with superfluous stack traces.",
+			"[Added] Added a `count` command."
+		]
+	},
+	{
 		"version": "0.3.0",
 		"downloadUrl": "https://github.com/TopShelfCraft/Walk/archive/0.3.0.zip",
 		"date": "2016-12-09T07:07:07",

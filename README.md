@@ -163,11 +163,13 @@ The following Element Criteria attributes can be set via CLI option:
 - `limit` (by default, `7`)
 - `title`
 - `slug`
+- `relatedTo`
 - `source`
 - `sourceId`
 - `kind`
 - `filename`
 - `folderId`
+- `size`
 - `group`
 - `groupId`
 - `authorGroup`
@@ -248,6 +250,15 @@ WalkHelper::spawnTasks('ProcessEmailAddress', $emailAddresses, $settings = [], $
 ```
 
 If you want to make your own console command that walks through some other set (i.e. not Elements or Element IDs), just check out the source code of the _WalkCommand_. You'll find it pretty easy to copy/paste your way to success!
+
+
+### What if I want to get a _count_ of elements in a criteria, without actually _doing_ anything to them?
+
+Okay, why not. You can use the `walk count` command for that. Make sure to specify the Element Type using an option, or as an inline argument:
+
+`php yiic walk count entries --section=blog`
+
+`php yiic walk count --type=assets --size=">42M"`
 
 
 ### This is great! I still have questions.
