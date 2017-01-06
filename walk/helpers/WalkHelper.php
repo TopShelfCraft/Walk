@@ -85,6 +85,9 @@ class WalkHelper
 
 		if (!is_array($elements)) $elements = [$elements];
 
+		// This could take a while. We'd prefer not to get hung up in the middle...
+		craft()->config->maxPowerCaptain();
+
 		foreach($elements as $el)
 		{
 

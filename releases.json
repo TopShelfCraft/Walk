@@ -1,5 +1,14 @@
 [
 	{
+		"version": "0.3.0",
+		"downloadUrl": "https://github.com/TopShelfCraft/Walk/archive/0.3.0.zip",
+		"date": "2016-12-09T07:07:07",
+		"notes": [
+			"[Improved] Added `relatedTo` as a criteria option in the Walk CLI command.",
+			"[Improved] Walk now summons Max Power when performing potentially intense operations, i.e. when spawning Tasks and when finding elements."
+		]
+	},
+	{
 		"version": "0.2.0",
 		"downloadUrl": "https://github.com/TopShelfCraft/Walk/archive/0.2.0.zip",
 		"date": "2016-11-22T07:07:07",

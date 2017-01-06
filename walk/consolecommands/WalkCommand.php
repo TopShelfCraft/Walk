@@ -21,7 +21,7 @@ class WalkCommand extends BaseCommand
 
 	// Element criteria
 	public $id, $limit=7, $offset;
-	public $title, $slug;
+	public $title, $slug, $relatedTo;
 	public $source, $sourceId, $kind, $filename, $folderId;
 	public $group, $groupId;
 	public $authorGroup, $authorGroupId, $authorId, $locale, $section, $status;
@@ -36,7 +36,7 @@ class WalkCommand extends BaseCommand
 
 
 	private $_criteriaOptions = [
-		'id', 'limit', 'offset', 'title', 'slug',
+		'id', 'limit', 'offset', 'title', 'slug', 'relatedTo',
 		'source', 'sourceId', 'kind', 'filename', 'folderId',
 		'group', 'groupId',
 		'authorGroup', 'authorGroupId', 'authorId', 'locale', 'section', 'status',
@@ -206,15 +206,22 @@ class WalkCommand extends BaseCommand
 
 		if ($this->asTask)
 		{
+
 			$elements = $this->_getCriteria($type)->ids();
 			WalkPlugin::log("Applying [{$callable}] to " . count($elements) . " elements via tasks.");
 			if (WalkHelper::spawnCallOnElementTasks($elements, $callable)) return 0;
+
 		}
 		else
 		{
+
+			// This could take a while. We'd prefer not to get hung up in the middle...
+			craft()->config->maxPowerCaptain();
+
 			$elements = $this->_getCriteria($type)->find();
 			WalkPlugin::log("Applying [{$callable}] to " . count($elements) . " elements.");
 			if (WalkHelper::craftyArrayWalk($elements, $callable)) return 0;
+
 		}
 
 		return 0;
