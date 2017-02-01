@@ -1,0 +1,54 @@
+{
+    "name": "topshelfcraft/walk",
+    "type": "craft-plugin",
+    "description": "A Craft-aware array_walk() method, plus some super-convenient console commands, to easily call Craft service methods on a collection of elements or values.",
+    "version": "3.0.0-beta.1",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "plugin",
+        "walk",
+        "array_walk",
+        "console"
+    ],
+    "license": "MIT",
+    "homepage": "https://topshelfcraft.com",
+    "authors": [
+        {
+            "name": "Top Shelf Craft",
+            "homepage": "https://topshelfcraft.com"
+        }
+    ],
+    "support": {
+        "email": "support@topshelfcraft.com",
+        "issues": "https://github.com/TopShelfCraft/Walk/issues?state=open",
+        "source": "https://github.com/TopShelfCraft/Walk",
+        "docs": "https://github.com/TopShelfCraft/Walk"
+    },
+    "require": {
+        "craftcms/cms": "^3.0.0-beta.1"
+    },
+    "autoload": {
+        "psr-4": {
+          "topshelfcraft\\walk\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Walk",
+        "handle": "walk",
+        "description": "It walks, like the walking man.",
+        "version": "3.0.0",
+        "schemaVersion": "3.0.0.0",
+        "hasSettings": false,
+        "hasCpSection": false,
+        "developer": "Top Shelf Craft (Michael Rog)",
+        "developerUrl": "https://topshelfcraft.com",
+        "documentationUrl": "",
+        "changelogUrl": "",
+        "components": {
+            "dummy": "topshelfcraft\\walk\\services\\DummyService"
+        },
+        "class": "topshelfcraft\\walk\\Walk"
+    }
+}
