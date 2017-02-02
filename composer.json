@@ -1,5 +1,5 @@
 {
-    "name": "topshelfcraft/walk",
+    "name": "topshelfcraft/craft3-walk",
     "type": "craft-plugin",
     "description": "A Craft-aware array_walk() method, plus some super-convenient console commands, to easily call Craft service methods on a collection of elements or values.",
     "version": "3.0.0-beta.1",
