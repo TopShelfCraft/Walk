@@ -25,6 +25,7 @@ class WalkCommand extends BaseCommand
 	public $source, $sourceId, $kind, $filename, $folderId, $size;
 	public $group, $groupId;
 	public $authorGroup, $authorGroupId, $authorId, $locale, $section, $status;
+	public $completed, $isPaid, $isUnPaid, $orderStatusId;
 
 	// Runner options
 	public $asTask = false;
@@ -40,6 +41,7 @@ class WalkCommand extends BaseCommand
 		'source', 'sourceId', 'kind', 'filename', 'folderId', 'size',
 		'group', 'groupId',
 		'authorGroup', 'authorGroupId', 'authorId', 'locale', 'section', 'status',
+		'completed', 'isPaid', 'isUnPaid', 'orderStatusId',
 	];
 
 	private $_elementTypes = [
@@ -128,6 +130,17 @@ class WalkCommand extends BaseCommand
 	 *
 	 * @return int
 	 */
+	public function actionOrders($args)
+	{
+		return $this->actionWalkElements($args, 'Commerce_Order');
+	}
+
+
+	/**
+	 * @param $args
+	 *
+	 * @return int
+	 */
 	public function actionAssetIds($args)
 	{
 		return $this->actionWalkElementIds($args, ElementType::Asset);
@@ -186,6 +199,17 @@ class WalkCommand extends BaseCommand
 	public function actionUserIds($args)
 	{
 		return $this->actionWalkElementIds($args, ElementType::User);
+	}
+
+
+	/**
+	 * @param $args
+	 *
+	 * @return int
+	 */
+	public function actionOrderIds($args)
+	{
+		return $this->actionWalkElementIds($args, 'Commerce_Order');
 	}
 
 

@@ -178,6 +178,10 @@ The following Element Criteria attributes can be set via CLI option:
 - `locale`
 - `section`
 - `status`
+- `completed`
+- `isPaid`
+- `isUnPaid`
+- `orderStatusId`
 
 
 <a name="walk-tasks-info" id="walk-tasks-info"></a>
@@ -256,9 +260,11 @@ If you want to make your own console command that walks through some other set (
 
 Okay, why not. You can use the `walk count` command for that. Make sure to specify the Element Type using an option, or as an inline argument:
 
-`php yiic walk count entries --section=blog`
+```shell
+php yiic walk count entries --section=blog
 
-`php yiic walk count --type=assets --size=">42M"`
+php yiic walk count --type=assets --size=">42M"
+```
 
 
 ### This is great! I still have questions.

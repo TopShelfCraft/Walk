@@ -1,5 +1,14 @@
 [
 	{
+		"version": "1.0.0",
+		"downloadUrl": "https://github.com/TopShelfCraft/Walk/archive/1.0.0.zip",
+		"date": "2017-07-15T07:07:07",
+		"notes": [
+			"[Added] Added direct support for processing Commerce Order elements via `orders` and `orderIds` commands.",
+			"[Added] Added `completed`, `isPaid`, `isUnPaid`, and `orderStatusId` params for filtering Commerce Order elements."
+		]
+	},
+	{
 		"version": "0.4.0",
 		"downloadUrl": "https://github.com/TopShelfCraft/Walk/archive/0.4.0.zip",
 		"date": "2017-01-05T07:07:07",
