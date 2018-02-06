@@ -24,7 +24,7 @@ class WalkCommand extends BaseCommand
 	public $title, $slug, $relatedTo;
 	public $source, $sourceId, $kind, $filename, $folderId, $size;
 	public $group, $groupId;
-	public $authorGroup, $authorGroupId, $authorId, $locale, $section, $status;
+	public $authorGroup, $authorGroupId, $authorId, $locale, $section, $type, $status;
 	public $completed, $isPaid, $isUnPaid, $orderStatusId;
 
 	// Runner options
@@ -40,7 +40,7 @@ class WalkCommand extends BaseCommand
 		'id', 'limit', 'offset', 'title', 'slug', 'relatedTo',
 		'source', 'sourceId', 'kind', 'filename', 'folderId', 'size',
 		'group', 'groupId',
-		'authorGroup', 'authorGroupId', 'authorId', 'locale', 'section', 'status',
+		'authorGroup', 'authorGroupId', 'authorId', 'locale', 'section', 'type', 'status',
 		'completed', 'isPaid', 'isUnPaid', 'orderStatusId',
 	];
 
@@ -218,7 +218,7 @@ class WalkCommand extends BaseCommand
 	 *
 	 * @return int
 	 */
-	public function actionWalkElements($args, $type)
+	public function actionWalkElements($args, $elementType)
 	{
 
 		$callable = $args[0] ?? null;
@@ -231,7 +231,7 @@ class WalkCommand extends BaseCommand
 		if ($this->asTask)
 		{
 
-			$elements = $this->_getCriteria($type)->ids();
+			$elements = $this->_getCriteria($elementType)->ids();
 			WalkPlugin::log("Applying [{$callable}] to " . count($elements) . " elements via tasks.", LogLevel::Profile, true);
 			if (WalkHelper::spawnCallOnElementTasks($elements, $callable)) return 0;
 
@@ -242,7 +242,7 @@ class WalkCommand extends BaseCommand
 			// This could take a while. We'd prefer not to get hung up in the middle...
 			craft()->config->maxPowerCaptain();
 
-			$elements = $this->_getCriteria($type)->find();
+			$elements = $this->_getCriteria($elementType)->find();
 			WalkPlugin::log("Applying [{$callable}] to " . count($elements) . " elements.", LogLevel::Profile, true);
 			if (WalkHelper::craftyArrayWalk($elements, $callable)) return 0;
 
@@ -257,7 +257,7 @@ class WalkCommand extends BaseCommand
 	 *
 	 * @return int
 	 */
-	public function actionWalkElementIds($args, $type)
+	public function actionWalkElementIds($args, $elementType)
 	{
 
 		$callable = $args[0] ?? null;
@@ -267,7 +267,7 @@ class WalkCommand extends BaseCommand
 			return 1;
 		}
 
-		$ids = $this->_getCriteria($type)->ids();
+		$ids = $this->_getCriteria($elementType)->ids();
 
 		if ($this->asTask)
 		{
@@ -302,28 +302,28 @@ class WalkCommand extends BaseCommand
 	 *
 	 * @return int
 	 */
-	public function actionCount($args=[], $type=null)
+	public function actionCount($args=[], $elementType=null)
 	{
 
-		if (empty($type) && !empty($args[0]))
+		if (empty($elementType) && !empty($args[0]))
 		{
-			$type = $args[0];
-			if (in_array($type, array_keys($this->_elementTypes)))
+			$elementType = $args[0];
+			if (in_array($elementType, array_keys($this->_elementTypes)))
 			{
-				$type = $this->_elementTypes[$args[0]];
+				$elementType = $this->_elementTypes[$args[0]];
 			}
 		}
 
-		if (empty($type))
+		if (empty($elementType))
 		{
-			echo "Please specify an element --type param.";
+			echo "Please specify an element --elementType param.";
 			return 1;
 		}
 
 		$this->limit = 'null';
-		$count = $this->_getCriteria($type)->count();
+		$count = $this->_getCriteria($elementType)->count();
 
-		echo "Found {$count} {$type} elements.";
+		echo "Found {$count} {$elementType} elements.";
 
 		return 0;
 
@@ -374,11 +374,11 @@ class WalkCommand extends BaseCommand
 
 
 	/**
-	 * @param $type
+	 * @param $elementType
 	 *
 	 * @return ElementCriteriaModel
 	 */
-	private function _getCriteria($type)
+	private function _getCriteria($elementType)
 	{
 
 		$attributes = [];
@@ -398,9 +398,9 @@ class WalkCommand extends BaseCommand
 			$attributes['status'] = null;
 		}
 
-		$criteria = craft()->elements->getCriteria($type, $attributes);
+		$criteria = craft()->elements->getCriteria($elementType, $attributes);
 
-		WalkPlugin::log("Using {$type} criteria: \n" . print_r($attributes, true), LogLevel::Profile, true);
+		WalkPlugin::log("Using {$elementType} criteria: \n" . print_r($attributes, true), LogLevel::Profile, true);
 
 		return $criteria;
 

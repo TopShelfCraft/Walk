@@ -177,6 +177,7 @@ The following Element Criteria attributes can be set via CLI option:
 - `authorId`
 - `locale`
 - `section`
+- `type`
 - `status`
 - `completed`
 - `isPaid`
@@ -263,7 +264,7 @@ Okay, why not. You can use the `walk count` command for that. Make sure to speci
 ```shell
 php yiic walk count entries --section=blog
 
-php yiic walk count --type=assets --size=">42M"
+php yiic walk count --elementType=assets --size=">42M"
 ```
 
 
