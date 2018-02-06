@@ -25,6 +25,8 @@ And you want to do this with several sets of elements, and with several differen
 
 Drop the `walk` directory into your Craft plugins directory, visit the _Settings_ page of the CP, and click to _Install_ the **Walk** plugin.
 
+If you don't already have a `yiic` file in the root of your project (next to the `craft` directory), then go ahead and drop that in too.
+
 
 ### Walk a what?
 
