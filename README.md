@@ -25,6 +25,8 @@ And you want to do this with several sets of elements, and with several differen
 
 Drop the `walk` directory into your Craft plugins directory, visit the _Settings_ page of the CP, and click to _Install_ the **Walk** plugin.
 
+If you don't already have a `yiic` file in the root of your project (next to the `craft` directory), then go ahead and drop that in too.
+
 
 ### Walk a what?
 
@@ -177,6 +179,7 @@ The following Element Criteria attributes can be set via CLI option:
 - `authorId`
 - `locale`
 - `section`
+- `type`
 - `status`
 - `completed`
 - `isPaid`
@@ -263,7 +266,7 @@ Okay, why not. You can use the `walk count` command for that. Make sure to speci
 ```shell
 php yiic walk count entries --section=blog
 
-php yiic walk count --type=assets --size=">42M"
+php yiic walk count --elementType=assets --size=">42M"
 ```
 
 
