@@ -1,4 +1,4 @@
-Copyright (c) 2016 Michael Rog
+Copyright (c) Michael Rog
 
 This software is released under the MIT License.
 

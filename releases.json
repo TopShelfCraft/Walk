@@ -1,5 +1,14 @@
 [
 	{
+		"version": "2.0.1",
+		"downloadUrl": "https://github.com/TopShelfCraft/Walk/archive/2.0.1.zip",
+		"date": "2018-02-13T07:07:07",
+		"notes": [
+			"[Added] Added a sample `yiic` file with instructions. (h/t @aaronwaldon)",
+			"[Improved] Changed `type` param to `elementType` so that `type` can be used to specify Entry Types (consistent with `craft.entries` templating). (h/t @aaronwaldon)"
+		]
+	},
+	{
 		"version": "1.0.0",
 		"downloadUrl": "https://github.com/TopShelfCraft/Walk/archive/1.0.0.zip",
 		"date": "2017-07-15T07:07:07",
