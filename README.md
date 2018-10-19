@@ -23,7 +23,7 @@ And you want to do this with several different sets of elements, and with severa
 
 ### Installation
 
-Install with Composer by running `composer require topshelfcraft/craft3-walk` from your project directory.
+Install with Composer by running `composer require topshelfcraft/walk` from your project directory.
 
 Then, visit the _Settings > Plugins_ page of the CP, and click to _Install_ the **Walk** plugin.
 
