@@ -54,7 +54,14 @@ class WalkHelper
 
 		if (is_callable($callable))
 		{
-			return array_walk($array, $callable, $userdata);
+			if ($userdata)
+			{
+				return array_walk($array, $callable, $userdata);
+			}
+			else
+			{
+				return array_walk($array, $callable);
+			}
 		}
 		else
 		{
