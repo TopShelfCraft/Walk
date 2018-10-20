@@ -16,6 +16,7 @@ use craft\elements\GlobalSet;
 use craft\elements\MatrixBlock;
 use craft\elements\Tag;
 use craft\elements\User;
+use craft\helpers\App;
 use topshelfcraft\walk\helpers\WalkHelper;
 use topshelfcraft\walk\Walk;
 use yii\console\Controller;
@@ -233,7 +234,7 @@ class WalkController extends Controller
 		}
 		else
 		{
-			Craft::$app->getConfig()->maxPowerCaptain();
+			App::maxPowerCaptain();
 			Walk::notice("Calling [{$callable}] on each {$elementType}.");
 			if (WalkHelper::craftyArrayWalk($elements, $callable)) return 0;
 		}

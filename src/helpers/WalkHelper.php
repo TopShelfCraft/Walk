@@ -6,6 +6,7 @@ use craft\base\Element;
 use craft\tasks\MissingTask;
 use topshelfcraft\walk\tasks\CallOnElementTask;
 use topshelfcraft\walk\tasks\CallOnValueTask;
+use craft\helpers\App;
 
 /**
  * WalkHelper
@@ -75,9 +76,9 @@ class WalkHelper
 	{
 
 		if (!is_array($elements)) $elements = [$elements];
-
+		
 		// This could take a while. We'd prefer not to get hung up in the middle...
-		Craft::$app->getConfig()->maxPowerCaptain();
+		App::maxPowerCaptain();
 
 		foreach($elements as $el)
 		{
