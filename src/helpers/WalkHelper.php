@@ -3,10 +3,9 @@ namespace topshelfcraft\walk\helpers;
 
 use Craft;
 use craft\base\Element;
-use craft\tasks\MissingTask;
-use topshelfcraft\walk\tasks\CallOnElementTask;
-use topshelfcraft\walk\tasks\CallOnValueTask;
 use craft\helpers\App;
+use topshelfcraft\walk\queue\jobs\CallOnElementJob;
+use topshelfcraft\walk\queue\jobs\CallOnValueJob;
 
 /**
  * WalkHelper
@@ -79,7 +78,7 @@ class WalkHelper
 	 *
 	 * @return bool
 	 */
-	public static function spawnTasks($type, $elements, $settings = [], $valParam = 'value')
+	public static function spawnJobs($type, $elements, $settings = [], $valParam = 'value')
 	{
 
 		if (!is_array($elements)) $elements = [$elements];
@@ -103,9 +102,8 @@ class WalkHelper
 			{
 				$settings = is_array($settings) ? $settings : [];
 				$settings[$valParam] = $val;
-				$task = Craft::$app->getTasks()->createTask(['type' => $type, 'settings' => $settings]);
-				if ($task instanceof MissingTask)
-					return false;
+				
+				$job = Craft::$app->queue->push(new $type($settings));
 			}
 
 		}
@@ -121,9 +119,9 @@ class WalkHelper
 	 *
 	 * @return bool
 	 */
-	public static function spawnCallOnElementTasks($elements, $callable)
+	public static function spawnCallOnElementJobs($elements, $callable)
 	{
-		return static::spawnTasks(CallOnElementTask::class, $elements, ['callable' => $callable], 'elementId');
+		return static::spawnJobs(CallOnElementJob::class, $elements, ['callable' => $callable], 'elementId');
 	}
 
 
@@ -133,9 +131,9 @@ class WalkHelper
 	 *
 	 * @return bool
 	 */
-	public static function spawnCallOnIdTasks($elements, $callable)
+	public static function spawnCallOnIdJobs($elements, $callable)
 	{
-		return static::spawnTasks(CallOnValueTask::class, $elements, ['callable' => $callable], 'value');
+		return static::spawnJobs(CallOnValueJob::class, $elements, ['callable' => $callable], 'value');
 	}
 
 
