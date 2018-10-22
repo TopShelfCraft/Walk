@@ -104,6 +104,9 @@ class WalkHelper
 				$settings[$valParam] = $val;
 				
 				$job = Craft::$app->queue->push(new $type($settings));
+				if (empty($job)) {
+					return false;
+				}
 			}
 
 		}
