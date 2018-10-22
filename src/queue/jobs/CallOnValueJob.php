@@ -56,7 +56,7 @@ class CallOnValueJob extends BaseJob
 		}
 		catch(\Exception $e)
 		{
-			Craft::error("Error during CallOnValue task: " . $e->getMessage());
+			Craft::error("Error during CallOnValue job: " . $e->getMessage());
 			return $e->getMessage();
 		}
 		

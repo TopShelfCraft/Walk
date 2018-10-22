@@ -57,7 +57,7 @@ class CallOnElementJob extends BaseJob
 		}
 		catch(\Exception $e)
 		{
-			Craft::error("Error during CallOnElement task: " . $e->getMessage());
+			Craft::error("Error during CallOnElement job: " . $e->getMessage());
 			return $e->getMessage();
 		}
 		
