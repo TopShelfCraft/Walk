@@ -123,12 +123,12 @@ In both examples, each Entry in the query will be re-saved.
 <a name="walk-console-commands" id="walk-console-commands"></a>
 ### Nifty... but I don't want to write any PHP. What about some **_console commands_**?
 
-That's actually why I wrote this plugin: I needed a fast, convenient way to do a bunch of indexing/re-saving, preferably from the CLI, without having to write a new custom command for each task/criteria combo.
+That's actually why I wrote this plugin: I needed a fast, convenient way to do a bunch of indexing/re-saving, preferably from the CLI, without having to write a new custom command for each job/criteria combo.
 
 So, without further ado, I give you... the `walk` _CLI command_.
 
 ```shell
-./craft walk [list] [callable] --[options]=blah --asTask
+./craft walk [list] [callable] --[options]=blah --asJob
 ```
 
 So, let's break that down:
@@ -136,7 +136,7 @@ So, let's break that down:
 - `[list]` is either an element type identifier (`assets`, `entries`, etc.), or an element _IDs_ identifier (`assetIds`, `entryIds`, etc.).
 - `[callable]` is the method/task you want to run on each item, as described [above](#walk-callable-formats).
 - There are several supported `[options]`, described [below](#walk-command-options).
-- The special (optional) `--asTask` option... I'll get to that [later](#walk-tasks-info).
+- The special (optional) `--asJob` option... I'll get to that [later](#walk-jobs-info).
 - The order of options is unimportant.
 
 If you want to re-save all your blog entries...
@@ -181,43 +181,43 @@ The following Element Criteria attributes can be set via CLI option:
 - `status`
 
 
-<a name="walk-tasks-info" id="walk-tasks-info"></a>
-### You said something about _Tasks_...?
+<a name="walk-jobs-info" id="walk-jobs-info"></a>
+### You said something about _Jobs_...?
 
-Say you have a lot of elements... or your callable methods are performance-intensive... or you need things to keep running even if your CLI connection is closed... or you just prefer to schedule things one-at-a-time using Tasks...
+Say you have a lot of elements... or your callable methods are performance-intensive... or you need things to keep running even if your CLI connection is closed... or you just prefer to schedule things one-at-a-time using the Craft queue...
 
 There are a couple ways **Walk** might help.
 
-#### 1. Schedule callables as Tasks using the CLI
+#### 1. Schedule callables as Jobs using the CLI
 
-You can use the special `--asTask` [command option](#walk-command-options) to schedule each walk step as a Task:
+You can use the special `--asJob` [command option](#walk-command-options) to schedule each walk step as a Job:
 
 ```shell
-./craft walk entries elements.saveElement --asTask
+./craft walk entries elements.saveElement --asJob
 
-./craft walk entryIds myModule.someComponent.aMethod --asTask
+./craft walk entryIds myModule.someComponent.aMethod --asJob
 ```
 
-This will still invoke the callable once for each element or ID in the criteria, but it will do so from inside a Task
+This will still invoke the callable once for each element or ID in the criteria, but it will do so from inside a Job
 — i.e. one request per element/step.
 
 This is nice if you want to keep track of the queue progress, or if you want to be able to conveniently re-run any steps that fail due to an error.
 
-In the Control Panel sidebar (or [Task Manager](https://github.com/boboldehampsink/taskmanager)), these show up as `CallOnElement` and `CallOnValue` tasks. 
+In the Control Panel sidebar these show up as `CallOnElement` and `CallOnValue` jobs.
 
-#### 2. Use a Task as a _callable_ via the PHP methods
+#### 2. Use a Job as a _callable_ via the PHP methods
  
 ```php
-WalkHelper::spawnTasks(MyTask::class, $elementsOrIds, $settings = [], $idParam = 'elementId')
+WalkHelper::spawnJobs(MyJob::class, $elementsOrIds, $settings = [], $valParam = 'elementId')
 ```
 
-The `spawnTasks` method can be used to schedule one instance of a specified task per element or ID in the provided set.
+The `spawnJobs` method can be used to schedule one instance of a specified job per element or ID in the provided set.
 
-The task is specified by full class name, just as if you were using `Craft::$app->getTasks()->createTask()`.
+The job is specified by full class name, just as if you were using `Craft::$app->queue->push()`.
 
-You can supply an array of extra settings in the `$settings` argument, which will be applied to each task.
+You can supply an array of extra settings in the `$settings` argument, which will be applied to each job.
 
-The specified task should expect to receive an `elementId` setting containing the element ID. Alternatively, you can also change the name of the setting that will receive the ID of the element, using the `$valueParam` argument.
+The specified job should expect to receive an `elementId` setting containing the element ID. Alternatively, you can also change the name of the setting that will receive the ID of the element, using the `$valParam` argument.
 
 
 ### Can I use this stuff with _any_ array? Does it _have_ to be elements/IDs?

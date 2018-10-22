@@ -3,9 +3,9 @@ namespace topshelfcraft\walk\helpers;
 
 use Craft;
 use craft\base\Element;
-use craft\tasks\MissingTask;
-use topshelfcraft\walk\tasks\CallOnElementTask;
-use topshelfcraft\walk\tasks\CallOnValueTask;
+use craft\helpers\App;
+use topshelfcraft\walk\queue\jobs\CallOnElementJob;
+use topshelfcraft\walk\queue\jobs\CallOnValueJob;
 
 /**
  * WalkHelper
@@ -53,7 +53,14 @@ class WalkHelper
 
 		if (is_callable($callable))
 		{
-			return array_walk($array, $callable, $userdata);
+			if ($userdata)
+			{
+				return array_walk($array, $callable, $userdata);
+			}
+			else
+			{
+				return array_walk($array, $callable);
+			}
 		}
 		else
 		{
@@ -71,13 +78,13 @@ class WalkHelper
 	 *
 	 * @return bool
 	 */
-	public static function spawnTasks($type, $elements, $settings = [], $valParam = 'value')
+	public static function spawnJobs($type, $elements, $settings = [], $valParam = 'value')
 	{
 
 		if (!is_array($elements)) $elements = [$elements];
-
+		
 		// This could take a while. We'd prefer not to get hung up in the middle...
-		Craft::$app->getConfig()->maxPowerCaptain();
+		App::maxPowerCaptain();
 
 		foreach($elements as $el)
 		{
@@ -95,9 +102,11 @@ class WalkHelper
 			{
 				$settings = is_array($settings) ? $settings : [];
 				$settings[$valParam] = $val;
-				$task = Craft::$app->getTasks()->createTask(['type' => $type, 'settings' => $settings]);
-				if ($task instanceof MissingTask)
+				
+				$job = Craft::$app->queue->push(new $type($settings));
+				if (empty($job)) {
 					return false;
+				}
 			}
 
 		}
@@ -113,9 +122,9 @@ class WalkHelper
 	 *
 	 * @return bool
 	 */
-	public static function spawnCallOnElementTasks($elements, $callable)
+	public static function spawnCallOnElementJobs($elements, $callable)
 	{
-		return static::spawnTasks(CallOnElementTask::class, $elements, ['callable' => $callable], 'elementId');
+		return static::spawnJobs(CallOnElementJob::class, $elements, ['callable' => $callable], 'elementId');
 	}
 
 
@@ -125,9 +134,9 @@ class WalkHelper
 	 *
 	 * @return bool
 	 */
-	public static function spawnCallOnIdTasks($elements, $callable)
+	public static function spawnCallOnIdJobs($elements, $callable)
 	{
-		return static::spawnTasks(CallOnValueTask::class, $elements, ['callable' => $callable], 'value');
+		return static::spawnJobs(CallOnValueJob::class, $elements, ['callable' => $callable], 'value');
 	}
 
 

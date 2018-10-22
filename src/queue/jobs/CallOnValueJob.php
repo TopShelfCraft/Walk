@@ -1,13 +1,13 @@
 <?php
-namespace topshelfcraft\walk\tasks;
+namespace topshelfcraft\walk\queue\jobs;
 
 use Craft;
-use craft\base\Task;
+use craft\queue\BaseJob;
 use topshelfcraft\walk\helpers\WalkHelper;
 
 
 /**
- * CallOnValue
+ * CallOnValueJob
  *
  * @author    Michael Rog <michael@michaelrog.com>
  * @copyright Copyright (c) 2016+ Michael Rog
@@ -15,7 +15,7 @@ use topshelfcraft\walk\helpers\WalkHelper;
  * @package   craft.plugins.walk
  * @since     3.0
  */
-class CallOnValueTask extends Task
+class CallOnValueJob extends BaseJob
 {
 
 
@@ -38,44 +38,14 @@ class CallOnValueTask extends Task
 	/*
 	 * Public methods
 	 */
-
-
+	
+	
 	/**
-	 * @inheritdoc
+	 * @param \craft\queue\QueueInterface|\yii\queue\Queue $queue
+	 * @return bool|string
 	 */
-	public function getDescription(): string
+	public function execute($queue)
 	{
-		return "Calling [{$this->callable}] on value: {$this->value}";
-	}
-
-
-	/**
-	 * @inheritdoc
-	 */
-	public function getTotalSteps(): int
-	{
-		return 1;
-	}
-
-
-	/**
-	 * @inheritdoc
-	 * @see http://www.yiiframework.com/doc-2.0/guide-input-validation.html
-	 */
-	public function rules()
-	{
-		return [
-			['callable', 'string'],
-		];
-	}
-
-
-	/**
-	 * @inheritdoc
-	 */
-	public function runStep(int $step)
-	{
-
 		try
 		{
 			if (!empty($this->value))
@@ -86,12 +56,20 @@ class CallOnValueTask extends Task
 		}
 		catch(\Exception $e)
 		{
-			Craft::error("Error during CallOnValue task: " . $e->getMessage());
+			Craft::error("Error during CallOnValue job: " . $e->getMessage());
 			return $e->getMessage();
 		}
-
+		
 		return true;
-
+	}
+	
+	
+	/**
+	 * @return null|string
+	 */
+	protected function defaultDescription()
+	{
+		return "Calling [{$this->callable}] on value: {$this->value}";
 	}
 
 

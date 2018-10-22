@@ -16,6 +16,7 @@ use craft\elements\GlobalSet;
 use craft\elements\MatrixBlock;
 use craft\elements\Tag;
 use craft\elements\User;
+use craft\helpers\App;
 use topshelfcraft\walk\helpers\WalkHelper;
 use topshelfcraft\walk\Walk;
 use yii\console\Controller;
@@ -53,7 +54,7 @@ class WalkController extends Controller
 	public $id;
 
 	// Runner options
-	public $asTask = false;
+	public $asJob = false;
 
 
 	/*
@@ -69,7 +70,7 @@ class WalkController extends Controller
 	];
 
 	private $_commandOptions = [
-		'asTask',
+		'asJob',
 	];
 
 
@@ -226,14 +227,14 @@ class WalkController extends Controller
 			return 1;
 		}
 
-		if ($this->asTask)
+		if ($this->asJob)
 		{
-			Walk::notice("Creating tasks to call [{$callable}] on each {$elementType}.");
-			if (WalkHelper::spawnCallOnElementTasks($elements, $callable)) return 0;
+			Walk::notice("Creating jobs to call [{$callable}] on each {$elementType}.");
+			if (WalkHelper::spawnCallOnElementJobs($elements, $callable)) return 0;
 		}
 		else
 		{
-			Craft::$app->getConfig()->maxPowerCaptain();
+			App::maxPowerCaptain();
 			Walk::notice("Calling [{$callable}] on each {$elementType}.");
 			if (WalkHelper::craftyArrayWalk($elements, $callable)) return 0;
 		}
@@ -263,10 +264,10 @@ class WalkController extends Controller
 			return 1;
 		}
 
-		if ($this->asTask)
+		if ($this->asJob)
 		{
-			Walk::notice("Creating tasks to call [{$callable}] on each ID.");
-			if (WalkHelper::spawnCallOnIdTasks($elements, $callable)) return 0;
+			Walk::notice("Creating jobs to call [{$callable}] on each ID.");
+			if (WalkHelper::spawnCallOnIdJobs($elements, $callable)) return 0;
 		}
 		else
 		{
