@@ -6,6 +6,7 @@ use craft\base\Element;
 use craft\helpers\App;
 use topshelfcraft\walk\queue\jobs\CallOnElementJob;
 use topshelfcraft\walk\queue\jobs\CallOnValueJob;
+use yii\base\InvalidConfigException;
 
 /**
  * WalkHelper
@@ -144,27 +145,36 @@ class WalkHelper
 	 * @param string $str
 	 *
 	 * @return array
-	 *
 	 */
 	public static function getComponentCallable($str)
 	{
 
 		$parts = explode('.', $str, 3);
 
-		if (count($parts) === 2)
+		try
 		{
-			// A Craft service method, e.g. `users.activateUser`
-			$component = Craft::$app->get($parts[0]);
-			$method = $parts[1];
+
+			if (count($parts) === 2)
+			{
+				// A Craft service method, e.g. `users.activateUser`
+				$component = Craft::$app->get($parts[0]);
+				$method = $parts[1];
+			}
+			elseif (count($parts) === 3)
+			{
+				// A module service method, e.g. `walk.walk.dummy`
+				$component = Craft::$app->getModule($parts[0])->get($parts[1]);
+				$method = $parts[2];
+			}
+			else
+			{
+				return null;
+			}
+
 		}
-		elseif (count($parts) === 3)
+		catch(InvalidConfigException $e)
 		{
-			// A module service method, e.g. `walk.walk.dummy`
-			$component = Craft::$app->getModule($parts[0])->get($parts[1]);
-			$method = $parts[2];
-		}
-		else
-		{
+			Craft::error($e->getMessage(), 'walk');
 			return null;
 		}
 
