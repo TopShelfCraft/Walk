@@ -133,11 +133,14 @@ So, without further ado, I give you... the `walk` _CLI command_.
 
 So, let's break that down:
 
-- `[list]` is either an element type identifier (`assets`, `entries`, etc.), or an element _IDs_ identifier (`assetIds`, `entryIds`, etc.).
+- `[list]` is:
+   - an element type identifier (`assets`, `entries`, etc.)
+   - an element _IDs_ identifier (`assetIds`, `entryIds`, etc.)
+   - a "count" directive (`countAssets`, `countEntries`, etc.)
 - `[callable]` is the method/task you want to run on each item, as described [above](#walk-callable-formats).
 - There are several supported `[options]`, described [below](#walk-command-options).
 - The special (optional) `--asJob` option... I'll get to that [later](#walk-jobs-info).
-- The order of options is unimportant.
+- The order of _options_ is arbitrary.
 
 If you want to re-save all your blog entries...
 ```shell
@@ -149,11 +152,17 @@ If you have a custom service method, and you want to run it once on each user:
 ./craft walk users --limit=null myPlugin.myComponent.myMethod
 ```
 
-What if your custom method takes an element _ID_ rather than an element _model_?
+What if your custom method takes an element _ID_ rather than an element _object_?
 ```
 ./craft walk entryIds myModule.myComponent.methodThatTakesAnID
 ```
 Tada!
+
+Or, perhaps you want to get a _count_ of elements in a criteria, without actually _doing_ anything to them?
+
+```
+./craft walk countEntries --section=blog
+```
 
 
 <a name="walk-command-options" id="walk-command-options"></a>
@@ -180,9 +189,37 @@ The following Element Criteria attributes can be set via CLI option:
 - `section`
 - `status`
 
+(...plus, for Commerce Orders...)
+
+- `dateOrdered`
+- `datePaid`
+- `email`
+- `gatewayId`
+- `hasPurchasables`
+- `isCompleted`
+- `isPaid`
+- `isUnpaid`
+- `orderStatus`
+- `orderStatusId`
+- `customerId`
+
+
+<a name="walk-third-party-elements" id="walk-third-party-elements"></a>
+### Does it work with custom element types?
+
+The Walk CLI command provides easy shorthands for Craft's built-in element types. However, you can use Walk with **any element type** by supplying its [fully-qualified] class name, along with the [fully-qualified] class name of the associated element _query_.
+
+```shell
+./craft walk/elements "mynamespace\elements\MyElementClass" --queryClass="mynamespace\elements\db\MyElementQuery"
+
+./craft walk/element-ids "craft\commerce\elements\Donation" --queryClass="craft\commerce\elements\db\DonationQuery"
+
+./craft walk/count "craft\elements\Entry" --queryClass="craft\elements\db\EntryQuery"
+```
+
 
 <a name="walk-jobs-info" id="walk-jobs-info"></a>
-### You said something about _Jobs_...?
+### Oh, and you said something about _Jobs_...?
 
 Say you have a lot of elements... or your callable methods are performance-intensive... or you need things to keep running even if your CLI connection is closed... or you just prefer to schedule things one-at-a-time using the Craft queue...
 
@@ -224,7 +261,7 @@ The specified job should expect to receive an `elementId` setting containing the
 
 The console commands are designed to perform bulk actions on sets of Elements or IDs.
 
-However, if you're feeling clever, you can use the `craftyArrayWalk()` helper method, **with any array**.
+However, if you're feeling clever, you can use the `craftyArrayWalk()` helper method **with any array**.
 
 For example, if you have an array of email addresses, and a `processEmailAddress` service method that takes an email address as its first argument...
 
@@ -235,20 +272,9 @@ $success = WalkHelper::craftyArrayWalk($emailAddresses, 'myPlugin.myService.proc
 If you want to make your own console command that walks through some other set (i.e. not Elements or Element IDs), just check out the source code of the _WalkController_. You'll find it pretty easy to copy/paste your way to success!
 
 
-### What if I want to get a _count_ of elements in a criteria, without actually _doing_ anything to them?
-
-**Coming soon:** You can use Walk's count commands for that. If you need to count elements of a non-native type, such as Commerce Products, you can use the `--elementType` modifier:
-
-```shell
-./craft walk countEntries --section=blog [callable]
-
-./craft walk countElements --elementType=CommerceProducts [callable]
-```
-
-
 ### This is great! I still have questions.
 
-Ask a question on [StackExchange](http://craftcms.stackexchange.com/), and ping me with a URL via email or Slack.
+Ask a question on [StackExchange](http://craftcms.stackexchange.com/), and ping me with a URL via email or Discord.
 
 
 ### What are the system requirements?
@@ -258,7 +284,7 @@ Craft 3.0+ and PHP 7.0+
 
 ### I found a bug.
 
-Please open a GitHub Issue, submit a PR to the `dev` branch, or just email me.
+Please open a GitHub Issue, submit a PR to the `3.x.dev` branch, or just email me.
 
 
 * * *
