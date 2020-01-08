@@ -154,7 +154,7 @@ If you have a custom service method, and you want to run it once on each user:
 
 What if your custom method takes an element _ID_ rather than an element _object_?
 ```
-./craft walk entryIds myModule.myComponent.methodThatTakesAnID
+./craft walk entryIds myModule.myComponent.methodThatTakesAnId
 ```
 Tada!
 
@@ -210,11 +210,11 @@ The following Element Criteria attributes can be set via CLI option:
 The Walk CLI command provides easy shorthands for Craft's built-in element types. However, you can use Walk with **any element type** by supplying its [fully-qualified] class name, along with the [fully-qualified] class name of the associated element _query_.
 
 ```shell
-./craft walk/elements "mynamespace\elements\MyElementClass" --queryClass="mynamespace\elements\db\MyElementQuery"
+./craft walk/elements "mynamespace\elements\MyElementClass" --queryClass="mynamespace\elements\db\MyElementQuery" myPlugin.myComponent.myMethod
 
-./craft walk/element-ids "craft\commerce\elements\Donation" --queryClass="craft\commerce\elements\db\DonationQuery"
+./craft walk/element-ids "craft\commerce\elements\Donation" --queryClass="craft\commerce\elements\db\DonationQuery" myPlugin.myComponent.methodThatTakesAnId
 
-./craft walk/count "craft\elements\Entry" --queryClass="craft\elements\db\EntryQuery"
+./craft walk/count "craft\elements\Entry" --queryClass="craft\elements\db\EntryQuery" elements.saveElement
 ```
 
 
