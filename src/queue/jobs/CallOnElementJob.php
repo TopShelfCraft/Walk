@@ -70,7 +70,7 @@ class CallOnElementJob extends BaseJob
 	 */
 	protected function defaultDescription()
 	{
-		return "Calling [{$this->callable}] on element {$this->elementId}";
+		return "Calling [{$this->callable}] on element: {$this->elementId}";
 	}
 	
 	

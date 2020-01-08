@@ -2,6 +2,7 @@
 namespace topshelfcraft\walk\console\controllers;
 
 use Craft;
+use craft\base\Element;
 use craft\elements\Asset;
 use craft\elements\Category;
 use craft\elements\db\AssetQuery;
@@ -46,15 +47,17 @@ class WalkController extends Controller
 	 * Public properties
 	 */
 
-	// (Options require the existence of a public member varible whose name is the option name.)
-	public $elementClass, $queryClass;
+	// (Options require the existence of a public member variable whose name is the option name.)
+	public $queryClass;
 	public $limit, $offset;
 	public $title, $slug, $relatedTo;
 	public $source, $sourceId, $kind, $filename, $folderId;
+	// TODO: $size (?)
 	public $group, $groupId;
 	public $authorGroup, $authorGroupId, $authorId, $locale, $section, $status;
 	public $dateOrdered, $datePaid, $email, $gatewayId, $hasPurchasables,
 		$isCompleted, $isPaid, $isUnpaid, $orderStatus, $orderStatusId, $customerId;
+	// TODO: Order total amount?
 
 	// The parent Controller class already implements an $id varible for its own purposes,
 	// but best I can tell, it's okay to overwrite it, so I'm including it here as a reminder to myself.
@@ -69,7 +72,7 @@ class WalkController extends Controller
 	 */
 
 	private $_elementTypeOptions = [
-		'elementClass', 'queryClass',
+		'queryClass',
 	];
 
 	private $_queryConfigOptions = [
@@ -102,20 +105,19 @@ class WalkController extends Controller
 		return array_merge(
 			parent::options($actionID),
 			$this->_queryConfigOptions,
+			$this->_elementTypeOptions,
 			$this->_commandOptions
 		);
 	}
 
 	/**
 	 * @inheritdoc
-	 *
-	 * @throws Exception if the 'plugin' option isn't valid
 	 */
 	public function beforeAction($action)
 	{
 		$this->color = true;
 		$this->_p('',2);
-		$this->stdout("============= { Walk } =============", Console::FG_BLUE, Console::BOLD);
+		$this->stdout("============= { Walk } =============", Console::BOLD);
 		$this->_p('',2);
 		return parent::beforeAction($action);
 	}
@@ -130,7 +132,7 @@ class WalkController extends Controller
 	public function afterAction($action, $result)
 	{
 		$this->_p('',2);
-		$this->stdout("====================================", Console::FG_BLUE, Console::BOLD);
+		$this->stdout("====================================", Console::BOLD);
 		$this->_p('',2);
 		return parent::afterAction($action, $result);
 	}
@@ -142,26 +144,25 @@ class WalkController extends Controller
 
 
 	/**
+	 * Perform a Walk action - e.g. `entries` / `entryIds` / `countEntries` / etc.
 	 *
+	 * @param null $action
+	 * @param null $callable
+	 *
+	 * @return int
 	 */
-	public function actionIndex($action = '', $callable = null)
+	public function actionIndex($action = null, $callable = null)
 	{
-
-		if (empty($action))
-		{
-			$this->stderr("You must specify an action type (e.g. `entries` / `entryIds` / `countEntries`).", Console::FG_RED);
-			return ExitCode::USAGE;
-		}
 
 		switch ($action)
 		{
 
 			case 'assets':
-				return $this->actionWalkElements(Asset::class, $callable);
+				return $this->actionElements(Asset::class, $callable);
 				break;
 
 			case 'assetIds':
-				return $this->actionWalkElementIds(Asset::class, $callable);
+				return $this->actionElementIds(Asset::class, $callable);
 				break;
 
 			case 'countAssets':
@@ -170,12 +171,12 @@ class WalkController extends Controller
 
 			case 'categories':
 			case 'cats':
-				return $this->actionWalkElements(Category::class, $callable);
+				return $this->actionElements(Category::class, $callable);
 				break;
 
 			case 'categoryIds':
-			case 'catIDs':
-				return $this->actionWalkElementIds(Category::class, $callable);
+			case 'catIds':
+				return $this->actionElementIds(Category::class, $callable);
 				break;
 
 			case 'countCategories':
@@ -184,11 +185,11 @@ class WalkController extends Controller
 				break;
 
 			case 'entries':
-				return $this->actionWalkElements(Entry::class, $callable);
+				return $this->actionElements(Entry::class, $callable);
 				break;
 
 			case 'entryIds':
-				return $this->actionWalkElementIds(Entry::class, $callable);
+				return $this->actionElementIds(Entry::class, $callable);
 				break;
 
 			case 'countEntries':
@@ -197,12 +198,12 @@ class WalkController extends Controller
 
 			case 'globalSets':
 			case 'globals':
-				return $this->actionWalkElements(GlobalSet::class, $callable);
+				return $this->actionElements(GlobalSet::class, $callable);
 				break;
 
 			case 'globalSetIds':
 			case 'globalIds':
-				return $this->actionWalkElementIds(GlobalSet::class, $callable);
+				return $this->actionElementIds(GlobalSet::class, $callable);
 				break;
 
 			case 'countGlobalSets':
@@ -211,11 +212,11 @@ class WalkController extends Controller
 				break;
 
 			case 'matrixBlocks':
-				return $this->actionWalkElements(MatrixBlock::class, $callable);
+				return $this->actionElements(MatrixBlock::class, $callable);
 				break;
 
 			case 'matrixBlockIds':
-				return $this->actionWalkElementIds(MatrixBlock::class, $callable);
+				return $this->actionElementIds(MatrixBlock::class, $callable);
 				break;
 
 			case 'countMatrixBlocks':
@@ -223,11 +224,11 @@ class WalkController extends Controller
 				break;
 
 			case 'tags':
-				return $this->actionWalkElements(Tag::class, $callable);
+				return $this->actionElements(Tag::class, $callable);
 				break;
 
 			case 'tagIds':
-				return $this->actionWalkElementIds(Tag::class, $callable);
+				return $this->actionElementIds(Tag::class, $callable);
 				break;
 
 			case 'countTags':
@@ -235,11 +236,11 @@ class WalkController extends Controller
 				break;
 
 			case 'users':
-				return $this->actionWalkElements(User::class, $callable);
+				return $this->actionElements(User::class, $callable);
 				break;
 
 			case 'userIds':
-				return $this->actionWalkElementIds(User::class, $callable);
+				return $this->actionElementIds(User::class, $callable);
 				break;
 
 			case 'countUsers':
@@ -247,11 +248,11 @@ class WalkController extends Controller
 				break;
 
 			case 'orders':
-				return $this->actionWalkElements(self::COMMERCE_ORDER_ELEMENT_CLASS, $callable);
+				return $this->actionElements(self::COMMERCE_ORDER_ELEMENT_CLASS, $callable);
 				break;
 
 			case 'orderIds':
-				return $this->actionWalkElementIds(self::COMMERCE_ORDER_ELEMENT_CLASS, $callable);
+				return $this->actionElementIds(self::COMMERCE_ORDER_ELEMENT_CLASS, $callable);
 				break;
 
 			case 'countOrders':
@@ -260,16 +261,21 @@ class WalkController extends Controller
 
 		}
 
+		$this->stderr("You must specify a valid action type (e.g. `entries` / `entryIds` / `countEntries`).", Console::FG_RED);
+		return ExitCode::USAGE;
+
 	}
 
 
 	/**
+	 * Walk over a set of elements, calling the specified callable on each Element object.
+	 *
 	 * @param $elementClass
 	 * @param $callable
 	 *
 	 * @return int
 	 */
-	public function actionWalkElements($elementClass = null, $callable = null)
+	public function actionElements($elementClass = Element::class, $callable = null)
 	{
 
 		if (!WalkHelper::isComponentCallable($callable))
@@ -284,7 +290,10 @@ class WalkController extends Controller
 			$count = count($ids);
 			Walk::notice("Found {$count} " . $this->_getHumanReadableClassName($elementClass, $count) . ".");
 			Walk::notice("Spawning jobs to call [{$callable}] on each element.");
-			if (WalkHelper::spawnCallOnElementJobs($ids, $callable)) return ExitCode::OK;
+			if (WalkHelper::spawnCallOnElementJobs($ids, $callable))
+			{
+				return ExitCode::OK;
+			}
 		}
 		else
 		{
@@ -293,7 +302,10 @@ class WalkController extends Controller
 			$count = count($elements);
 			Walk::notice("Found {$count} " . $this->_getHumanReadableClassName($elementClass, $count) . ".");
 			Walk::notice("Calling [{$callable}] on each element.");
-			if (WalkHelper::craftyArrayWalk($elements, $callable)) return ExitCode::OK;
+			if (WalkHelper::craftyArrayWalk($elements, $callable))
+			{
+				return ExitCode::OK;
+			}
 		}
 
 		return ExitCode::UNSPECIFIED_ERROR;
@@ -302,12 +314,14 @@ class WalkController extends Controller
 
 
 	/**
+	 * Walk over a set of elements, calling the specified callable on each element's ID.
+	 *
 	 * @param $elementClass
 	 * @param $callable
 	 *
 	 * @return int
 	 */
-	public function actionWalkElementIds($elementClass = null, $callable = null)
+	public function actionElementIds($elementClass = Element::class, $callable = null)
 	{
 
 		$elements = $this->_getQuery($elementClass)->ids();
@@ -324,13 +338,19 @@ class WalkController extends Controller
 		if ($this->asJob)
 		{
 			Walk::notice("Creating jobs to call [{$callable}] on each element ID.");
-			if (WalkHelper::spawnCallOnIdJobs($elements, $callable)) return ExitCode::OK;
+			if (WalkHelper::spawnCallOnIdJobs($elements, $callable))
+			{
+				return ExitCode::OK;
+			}
 		}
 		else
 		{
 			App::maxPowerCaptain();
 			Walk::notice("Calling [{$callable}] on each element ID.");
-			if (WalkHelper::craftyArrayWalk($elements, $callable)) return ExitCode::OK;
+			if (WalkHelper::craftyArrayWalk($elements, $callable))
+			{
+				return ExitCode::OK;
+			}
 		}
 
 		return ExitCode::UNSPECIFIED_ERROR;
@@ -338,12 +358,14 @@ class WalkController extends Controller
 	}
 
 	/**
+	 * Count how many elements match the given criteria.
+	 *
 	 * @param $elementClass
 	 * @param $callable
 	 *
 	 * @return int
 	 */
-	public function actionCount($elementClass = null)
+	public function actionCount($elementClass = Element::class)
 	{
 
 		$count = $this->_getQuery($elementClass)->count();
@@ -361,7 +383,7 @@ class WalkController extends Controller
 
 
 	/**
-	 * @param string $type
+	 * @param string $elementClass
 	 *
 	 * @return ElementQuery
 	 */
@@ -394,54 +416,44 @@ class WalkController extends Controller
 		{
 
 			case Asset::class :
-				$query = new AssetQuery(Asset::class, $config);
-				break;
+				return new AssetQuery(Asset::class, $config);
 
 			case Category::class :
-				$query = new CategoryQuery(Category::class, $config);
-				break;
+				return new CategoryQuery(Category::class, $config);
 
 			case Entry::class :
-				$query = new EntryQuery(Entry::class, $config);
-				break;
+				return new EntryQuery(Entry::class, $config);
 
 			case GlobalSet::class :
-				$query = new GlobalSetQuery(GlobalSet::class, $config);
-				break;
+				return new GlobalSetQuery(GlobalSet::class, $config);
 
 			case MatrixBlock::class :
-				$query = new MatrixBlockQuery(MatrixBlock::class, $config);
-				break;
+				return new MatrixBlockQuery(MatrixBlock::class, $config);
 
 			case Tag::class :
-				$query = new TagQuery(Tag::class, $config);
-				break;
+				return new TagQuery(Tag::class, $config);
 
 			case User::class :
-				$query = new UserQuery(User::class, $config);
-				break;
+				return new UserQuery(User::class, $config);
 
 			case self::COMMERCE_ORDER_ELEMENT_CLASS :
 				if (Craft::$app->getPlugins()->isPluginInstalled('commerce'))
 				{
 					$queryClass = self::COMMERCE_ORDER_QUERY_CLASS;
-					$query = new $queryClass(self::COMMERCE_ORDER_ELEMENT_CLASS, $config);
+					return new $queryClass(self::COMMERCE_ORDER_ELEMENT_CLASS, $config);
 				}
-				else
-				{
-					$this->stderr("Craft Commerce is not installed.", Console::FG_RED);
-					$query = new ElementQuery(self::COMMERCE_ORDER_ELEMENT_CLASS, $config);
-				}
-				break;
-
-			default :
-				// TODO: Allow user-selected query classes via `queryClass` param
-				$query = new ElementQuery(self::COMMERCE_ORDER_ELEMENT_CLASS, $config);
-				break;
+				$this->stderr("Craft Commerce is not installed.", Console::FG_RED);
+				return new ElementQuery(self::COMMERCE_ORDER_ELEMENT_CLASS, $config);
 
 		}
 
-		return $query;
+		if ($this->queryClass)
+		{
+			$queryClass = $this->queryClass;
+			return new $queryClass($elementClass, $config);
+		}
+
+		return new ElementQuery($elementClass, $config);
 
 	}
 

@@ -37,6 +37,8 @@ class Walk extends Plugin
 
 		if (Craft::$app instanceof ConsoleApplication)
 		{
+			// Index our controller actions under `walk` rather than the default `walk\walk` -- cuz, prettier.
+			$this->controllerNamespace = 'topshelfcraft\walk\null';
 			Craft::$app->controllerMap['walk'] = WalkController::class;
 		}
 
