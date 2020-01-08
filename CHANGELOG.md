@@ -7,6 +7,13 @@ The format of this changelog is based on ["Keep a Changelog"](http://keepachange
 This project adheres to [Semantic Versioning](http://semver.org/). Version numbers follow the pattern: `MAJOR.FEATURE.BUILD`
 
 
+## 3.0.0-rc.1 - 2020-01-08
+
+### Added
+
+- Improved documentation, including instructions for custom/third-party element queries. 
+
+
 ## 3.0.0-beta.3 - 2020-01-08
 
 ### Changed
