@@ -38,8 +38,8 @@ class CallOnElementJob extends BaseJob
     /*
      * Public methods
      */
-	
-	
+
+
 	/**
 	 * @param \craft\queue\QueueInterface|\yii\queue\Queue $queue
 	 * @return bool|string
@@ -60,11 +60,11 @@ class CallOnElementJob extends BaseJob
 			Craft::error("Error during CallOnElement job: " . $e->getMessage());
 			return $e->getMessage();
 		}
-		
+
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * @return null|string
 	 */
@@ -72,6 +72,6 @@ class CallOnElementJob extends BaseJob
 	{
 		return "Calling [{$this->callable}] on element: {$this->elementId}";
 	}
-	
-	
+
+
 }
