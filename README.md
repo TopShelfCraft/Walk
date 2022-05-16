@@ -1,6 +1,9 @@
 # Walk
 
-_Provides a Craft-aware `array_walk()` method, plus some super-convenient console commands, allowing you to easily call Craft service methods on a collection of elements or values._
+Any other man stops and talks...  
+But the walking man walks.
+
+_**Walk** provides a Craft-aware array walk method, plus some super-convenient console commands, allowing you to easily call Craft service methods on a collection of elements or values._
 
 **A [Top Shelf Craft](https://topshelfcraft.com) creation**  
 [Michael Rog](https://michaelrog.com), Proprietor
