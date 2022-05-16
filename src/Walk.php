@@ -1,62 +1,36 @@
 <?php
-namespace topshelfcraft\walk;
+namespace TopShelfCraft\Walk;
 
 use Craft;
-use craft\base\Plugin;
 use craft\console\Application as ConsoleApplication;
-use topshelfcraft\walk\console\controllers\WalkController;
-
+use TopShelfCraft\base\Plugin;
+use TopShelfCraft\Walk\controllers\console\WalkController;
 
 /**
- * Walk Plugin
- *
- * @author    Michael Rog <michael@michaelrog.com>
- * @copyright Copyright (c) 2016+ Michael Rog
- * @see       https://topshelfcraft.com
- * @package   craft.plugins.walk
- * @since     3.0
+ * @author Michael Rog <michael@michaelrog.com>
+ * @link https://topshelfcraft.com
+ * @copyright Copyright 2022, Top Shelf Craft (Michael Rog)
  */
 class Walk extends Plugin
 {
 
+	public ?string $changelogUrl = "https://raw.githubusercontent.com/TopShelfCraft/Walk/4.x/CHANGELOG.md";
+	public bool $hasCpSection = false;
+	public bool $hasCpSettings = false;
+	public string $schemaVersion = "0.0.0.0";
 
-	/**
-	 * @var Walk $plugin
-	 */
-	public static $plugin;
-
-
-	/**
-	 * @inheritdoc
-	 */
 	public function init()
 	{
 
 		parent::init();
-		self::$plugin = $this;
 
 		if (Craft::$app instanceof ConsoleApplication)
 		{
 			// Index our controller actions under `walk` rather than the default `walk\walk` -- cuz, prettier.
-			$this->controllerNamespace = 'topshelfcraft\walk\null';
+			$this->controllerNamespace = 'TopShelfCraft\Walk\null';
 			Craft::$app->controllerMap['walk'] = WalkController::class;
 		}
 
 	}
-
-
-	/**
-	 * @param string $message
-	 * @param string $category
-	 */
-	public static function notice($message = '', $category = 'Walk')
-	{
-		Craft::info("\n".print_r($message, true), $category);
-		if (Craft::$app instanceof ConsoleApplication)
-		{
-			echo "\n" . print_r($message, true);
-		}
-	}
-
 
 }

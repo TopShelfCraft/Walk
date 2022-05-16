@@ -2,8 +2,8 @@
 
 _Provides a Craft-aware `array_walk()` method, plus some super-convenient console commands, allowing you to easily call Craft service methods on a collection of elements or values._
 
-by [Michael Rog](https://topshelfcraft.com)
-
+**A [Top Shelf Craft](https://topshelfcraft.com) creation**  
+[Michael Rog](https://michaelrog.com), Proprietor
 
 
 ### TL;DR.
@@ -279,12 +279,12 @@ Ask a question on [StackExchange](http://craftcms.stackexchange.com/), and ping 
 
 ### What are the system requirements?
 
-Craft 3.0+ and PHP 7.0+
+Craft 4.0+ and PHP 8.0+
 
 
 ### I found a bug.
 
-Please open a GitHub Issue, submit a PR to the `3.x.dev` branch, or just email me.
+Please open a GitHub Issue, or submit a PR to the `4.x.dev` branch.
 
 
 * * *

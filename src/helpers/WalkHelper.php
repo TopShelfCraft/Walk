@@ -1,53 +1,25 @@
 <?php
-namespace topshelfcraft\walk\helpers;
+namespace TopShelfCraft\Walk\helpers;
 
 use Craft;
 use craft\base\Element;
 use craft\helpers\App;
-use topshelfcraft\walk\queue\jobs\CallOnElementJob;
-use topshelfcraft\walk\queue\jobs\CallOnValueJob;
+use TopShelfCraft\Walk\queue\CallOnElementJob;
+use TopShelfCraft\Walk\queue\CallOnValueJob;
 use yii\base\InvalidConfigException;
 
-/**
- * WalkHelper
- *
- * @author    Michael Rog <michael@michaelrog.com>
- * @copyright Copyright (c) 2016+ Michael Rog
- * @see       https://topshelfcraft.com
- * @package   craft.plugins.walk
- * @since     3.0
- */
 class WalkHelper
 {
 
-
-	/*
-	 * Regex patterns for matching callables
-	 */
-
 	const ServiceCallablePattern = '/^([a-z]\w*)(\.([a-z]\w*)){1,2}$/';
 
-	const Craft2_ServiceCallablePattern = '/^([a-z]\w*)\.([a-z]\w*)$/';
-	const Craft2_HelperCallablePattern = '/^[A-Z]\w*Helper\w*::([a-z]\w*)$/';
-	const Craft2_TaskCallablePattern = '/^[A-Z]\w*Task$/';
-
-
-	/*
-	 * Public methods
-	 */
-
-
 	/**
-	 * @param array $array
-	 * @param string $callable
-	 * @param null $userdata
-	 *
-	 * @return bool
+	 * @todo Ditch boolean return and refactor to Exceptions in 5.0.
 	 */
-	public static function craftyArrayWalk(&$array, $callable, $userdata = null)
+	public static function craftyArrayWalk(array &$array, string $callable, $userdata = null): bool
 	{
 
-		if (is_string($callable) && preg_match(static::ServiceCallablePattern, $callable))
+		if (preg_match(static::ServiceCallablePattern, $callable))
 		{
 			$callable = static::getComponentCallable($callable);
 		}
@@ -70,16 +42,10 @@ class WalkHelper
 
 	}
 
-
 	/**
-	 * @param string $type
-	 * @param array $elements
-	 * @param array $settings
-	 * @param string $valParam
-	 *
-	 * @return bool
+	 * @todo Ditch boolean return and refactor to Exceptions in 5.0.
 	 */
-	public static function spawnJobs($type, $elements, $settings = [], $valParam = 'value')
+	public static function spawnJobs(string $type, array $elements, array $settings = [], string $valParam = 'value'): bool
 	{
 
 		if (!is_array($elements)) $elements = [$elements];
@@ -116,37 +82,23 @@ class WalkHelper
 
 	}
 
-
 	/**
-	 * @param array $elements
-	 * @param string $callable
-	 *
-	 * @return bool
+	 * @todo Ditch boolean return and refactor to Exceptions in 5.0.
 	 */
-	public static function spawnCallOnElementJobs($elements, $callable)
+	public static function spawnCallOnElementJobs(array $elements, string $callable): bool
 	{
 		return static::spawnJobs(CallOnElementJob::class, $elements, ['callable' => $callable], 'elementId');
 	}
 
-
 	/**
-	 * @param array $elements
-	 * @param string $callable
-	 *
-	 * @return bool
+	 * @todo Ditch boolean return and refactor to Exceptions in 5.0.
 	 */
-	public static function spawnCallOnIdJobs($elements, $callable)
+	public static function spawnCallOnIdJobs(array $elements, string $callable): bool
 	{
 		return static::spawnJobs(CallOnValueJob::class, $elements, ['callable' => $callable], 'value');
 	}
 
-
-	/**
-	 * @param string $str
-	 *
-	 * @return array
-	 */
-	public static function getComponentCallable($str)
+	public static function getComponentCallable(string $str): ?callable
 	{
 
 		$parts = explode('.', $str, 3);
@@ -182,18 +134,10 @@ class WalkHelper
 
 	}
 
-
-	/**
-	 * @param string $str
-	 *
-	 * @return bool
-	 *
-	 */
-	public static function isComponentCallable($str)
+	public static function isComponentCallable(string $str): bool
 	{
 		$callable = static::getComponentCallable($str);
 		return is_callable($callable);
 	}
-
 
 }

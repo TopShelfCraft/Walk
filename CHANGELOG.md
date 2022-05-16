@@ -1,10 +1,24 @@
 # _Walk_ Plugin Changelog
 
-All notable changes to the _Walk_ plugin will be documented in this file.
+The format of this file is based on ["Keep a Changelog"](http://keepachangelog.com/). This project adheres to [Semantic Versioning](http://semver.org/). Version numbers follow the pattern: `MAJOR.FEATURE.BUGFIX`
 
-The format of this changelog is based on ["Keep a Changelog"](http://keepachangelog.com/).
 
-This project adheres to [Semantic Versioning](http://semver.org/). Version numbers follow the pattern: `MAJOR.FEATURE.BUILD`
+## 4.0.0 - 2022-05-15
+
+### Improved
+
+- Walk is ready for Craft 4!
+
+### Removed
+
+- Removed `Walk::$plugin` static accessor; use `getInstance()` instead.
+
+
+## 3.0.0 - 2020-03-20
+
+### Improved
+
+- Improved documentation, including missing callables in third-party element examples.
 
 
 ## 3.0.0-rc.1 - 2020-01-08

@@ -1,5 +1,5 @@
 <?php
-namespace topshelfcraft\walk\console\controllers;
+namespace TopShelfCraft\Walk\controllers\console;
 
 use Craft;
 use craft\base\Element;
@@ -19,33 +19,20 @@ use craft\elements\MatrixBlock;
 use craft\elements\Tag;
 use craft\elements\User;
 use craft\helpers\App;
-use topshelfcraft\walk\helpers\WalkHelper;
-use topshelfcraft\walk\Walk;
+use TopShelfCraft\base\controllers\console\ConsoleControllerTrait;
+use TopShelfCraft\Walk\helpers\WalkHelper;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\helpers\BaseInflector;
 use yii\helpers\Console;
 
-
-
-/**
- * WalkCommand walks, like the walking man.
- *
- * @author    Michael Rog <michael@michaelrog.com>
- * @copyright Copyright (c) 2016+ Michael Rog
- * @see       https://topshelfcraft.com
- * @package   craft.plugins.walk
- * @since     3.0
- */
 class WalkController extends Controller
 {
 
+	use ConsoleControllerTrait;
+
 	const COMMERCE_ORDER_ELEMENT_CLASS = 'craft\commerce\elements\Order';
 	const COMMERCE_ORDER_QUERY_CLASS = 'craft\commerce\elements\db\OrderQuery';
-
-	/*
-	 * Public properties
-	 */
 
 	// (Options require the existence of a public member variable whose name is the option name.)
 	public $queryClass;
@@ -66,11 +53,6 @@ class WalkController extends Controller
 	// Runner options
 	public $asJob = false;
 
-
-	/*
-	 * Private properties
-	 */
-
 	private $_elementTypeOptions = [
 		'queryClass',
 	];
@@ -90,13 +72,6 @@ class WalkController extends Controller
 		'asJob',
 	];
 
-
-
-	/*
-	 * Public methods --- Class customization
-	 */
-
-
 	/**
 	 * @inheritdoc
 	 */
@@ -111,47 +86,9 @@ class WalkController extends Controller
 	}
 
 	/**
-	 * @inheritdoc
-	 */
-	public function beforeAction($action)
-	{
-		$this->color = true;
-		$this->_p('',2);
-		$this->stdout("============= { Walk } =============", Console::BOLD);
-		$this->_p('',2);
-		return parent::beforeAction($action);
-	}
-
-
-	/**
-	 * @param \yii\base\Action $action
-	 * @param mixed $result
-	 *
-	 * @return mixed
-	 */
-	public function afterAction($action, $result)
-	{
-		$this->_p('',2);
-		$this->stdout("====================================", Console::BOLD);
-		$this->_p('',2);
-		return parent::afterAction($action, $result);
-	}
-
-
-	/*
-	 * Public methods --- Command actions
-	 */
-
-
-	/**
 	 * Perform a Walk action - e.g. `entries` / `entryIds` / `countEntries` / etc.
-	 *
-	 * @param null $action
-	 * @param null $callable
-	 *
-	 * @return int
 	 */
-	public function actionIndex($action = null, $callable = null)
+	public function actionIndex(?string $action = null, ?string $callable = null): int
 	{
 
 		switch ($action)
@@ -159,105 +96,81 @@ class WalkController extends Controller
 
 			case 'assets':
 				return $this->actionElements(Asset::class, $callable);
-				break;
 
 			case 'assetIds':
 				return $this->actionElementIds(Asset::class, $callable);
-				break;
 
 			case 'countAssets':
 				return $this->actionCount(Asset::class);
-				break;
 
 			case 'categories':
 			case 'cats':
 				return $this->actionElements(Category::class, $callable);
-				break;
 
 			case 'categoryIds':
 			case 'catIds':
 				return $this->actionElementIds(Category::class, $callable);
-				break;
 
 			case 'countCategories':
 			case 'countCats':
 				return $this->actionCount(Category::class);
-				break;
 
 			case 'entries':
 				return $this->actionElements(Entry::class, $callable);
-				break;
 
 			case 'entryIds':
 				return $this->actionElementIds(Entry::class, $callable);
-				break;
 
 			case 'countEntries':
 				return $this->actionCount(Entry::class);
-				break;
 
 			case 'globalSets':
 			case 'globals':
 				return $this->actionElements(GlobalSet::class, $callable);
-				break;
 
 			case 'globalSetIds':
 			case 'globalIds':
 				return $this->actionElementIds(GlobalSet::class, $callable);
-				break;
 
 			case 'countGlobalSets':
 			case 'countGlobals':
 				return $this->actionCount(GlobalSet::class);
-				break;
 
 			case 'matrixBlocks':
 				return $this->actionElements(MatrixBlock::class, $callable);
-				break;
 
 			case 'matrixBlockIds':
 				return $this->actionElementIds(MatrixBlock::class, $callable);
-				break;
 
 			case 'countMatrixBlocks':
 				return $this->actionCount(MatrixBlock::class);
-				break;
 
 			case 'tags':
 				return $this->actionElements(Tag::class, $callable);
-				break;
 
 			case 'tagIds':
 				return $this->actionElementIds(Tag::class, $callable);
-				break;
 
 			case 'countTags':
 				return $this->actionCount(Tag::class);
-				break;
 
 			case 'users':
 				return $this->actionElements(User::class, $callable);
-				break;
 
 			case 'userIds':
 				return $this->actionElementIds(User::class, $callable);
-				break;
 
 			case 'countUsers':
 				return $this->actionCount(User::class);
-				break;
 
 			case 'orders':
 				return $this->actionElements(self::COMMERCE_ORDER_ELEMENT_CLASS, $callable);
-				break;
 
 			case 'orderIds':
 				return $this->actionElementIds(self::COMMERCE_ORDER_ELEMENT_CLASS, $callable);
-				break;
 
 			case 'countOrders':
 				return $this->actionCount(self::COMMERCE_ORDER_ELEMENT_CLASS);
-				break;
 
 		}
 
@@ -266,21 +179,15 @@ class WalkController extends Controller
 
 	}
 
-
 	/**
 	 * Walk over a set of elements, calling the specified callable on each Element object.
-	 *
-	 * @param $elementClass
-	 * @param $callable
-	 *
-	 * @return int
 	 */
-	public function actionElements($elementClass = Element::class, $callable = null)
+	public function actionElements(string $elementClass = Element::class, ?string $callable = null): int
 	{
 
 		if (!WalkHelper::isComponentCallable($callable))
 		{
-			$this->_p("Please specify a valid callable method.");
+			$this->writeErr("Please specify a valid callable method.");
 			return ExitCode::UNSPECIFIED_ERROR;
 		}
 
@@ -288,8 +195,8 @@ class WalkController extends Controller
 		{
 			$ids = $this->_getQuery($elementClass)->ids();
 			$count = count($ids);
-			Walk::notice("Found {$count} " . $this->_getHumanReadableClassName($elementClass, $count) . ".");
-			Walk::notice("Spawning jobs to call [{$callable}] on each element.");
+			$this->writeLine("Found {$count} " . $this->_getHumanReadableClassName($elementClass, $count) . ".");
+			$this->writeLine("Spawning jobs to call [{$callable}] on each element.");
 			if (WalkHelper::spawnCallOnElementJobs($ids, $callable))
 			{
 				return ExitCode::OK;
@@ -300,8 +207,8 @@ class WalkController extends Controller
 			App::maxPowerCaptain();
 			$elements = $this->_getQuery($elementClass)->all();
 			$count = count($elements);
-			Walk::notice("Found {$count} " . $this->_getHumanReadableClassName($elementClass, $count) . ".");
-			Walk::notice("Calling [{$callable}] on each element.");
+			$this->writeLine("Found {$count} " . $this->_getHumanReadableClassName($elementClass, $count) . ".");
+			$this->writeLine("Calling [{$callable}] on each element.");
 			if (WalkHelper::craftyArrayWalk($elements, $callable))
 			{
 				return ExitCode::OK;
@@ -312,32 +219,26 @@ class WalkController extends Controller
 
 	}
 
-
 	/**
 	 * Walk over a set of elements, calling the specified callable on each element's ID.
-	 *
-	 * @param $elementClass
-	 * @param $callable
-	 *
-	 * @return int
 	 */
-	public function actionElementIds($elementClass = Element::class, $callable = null)
+	public function actionElementIds(string $elementClass = Element::class, ?string $callable = null): int
 	{
 
 		$elements = $this->_getQuery($elementClass)->ids();
 		$count = count($elements);
 
-		$this->_p("Found {$count} " . $this->_getHumanReadableClassName($elementClass, $count) . ".");
+		$this->writeLine("Found {$count} " . $this->_getHumanReadableClassName($elementClass, $count) . ".");
 
 		if (!WalkHelper::isComponentCallable($callable))
 		{
-			$this->_p("Please specify a valid callable method.");
+			$this->writeErr("Please specify a valid callable method.");
 			return ExitCode::USAGE;
 		}
 
 		if ($this->asJob)
 		{
-			Walk::notice("Creating jobs to call [{$callable}] on each element ID.");
+			$this->writeLine("Creating jobs to call [{$callable}] on each element ID.");
 			if (WalkHelper::spawnCallOnIdJobs($elements, $callable))
 			{
 				return ExitCode::OK;
@@ -346,7 +247,7 @@ class WalkController extends Controller
 		else
 		{
 			App::maxPowerCaptain();
-			Walk::notice("Calling [{$callable}] on each element ID.");
+			$this->writeLine("Calling [{$callable}] on each element ID.");
 			if (WalkHelper::craftyArrayWalk($elements, $callable))
 			{
 				return ExitCode::OK;
@@ -370,24 +271,13 @@ class WalkController extends Controller
 
 		$count = $this->_getQuery($elementClass)->count();
 
-		$this->_p("Found {$count} " . $this->_getHumanReadableClassName($elementClass, $count) . ".");
+		$this->writeLine("Found {$count} " . $this->_getHumanReadableClassName($elementClass, $count) . ".");
 
 		return ExitCode::OK;
 
 	}
 
-
-	/*
-	 * Private methods
-	 */
-
-
-	/**
-	 * @param string $elementClass
-	 *
-	 * @return ElementQuery
-	 */
-	private function _getQuery($elementClass)
+	private function _getQuery(string $elementClass): ElementQuery
 	{
 
 		$config = [];
@@ -457,27 +347,10 @@ class WalkController extends Controller
 
 	}
 
-
 	/**
-	 * Outputs spacer lines
-	 *
-	 * @param int $lines The number of blank lines
-	 * @param string $msg The message to append after the lines
+	 * Get a human-readable class name, without the fully-qualified path.
 	 */
-	private function _p($msg = '', $lines = 1)
-	{
-		$this->stdout(str_repeat("\n", $lines) . print_r($msg, true));
-	}
-
-	/**
-	 * Get a human-readable class name, without the fully-qualified path
-	 *
-	 * @param string $elementClass
-	 * @param int $qty
-	 * 
-	 * @return mixed
-	 */
-	private function _getHumanReadableClassName($elementClass = '', $qty = 1)
+	private function _getHumanReadableClassName(string $elementClass = '', int $qty = 1): string
 	{
 		$path = explode('\\', $elementClass);
 		$name = array_pop($path);
