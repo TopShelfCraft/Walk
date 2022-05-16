@@ -1,7 +1,7 @@
 {
     "name": "topshelfcraft/walk",
     "type": "craft-plugin",
-    "description": "A Craft-aware array walk tool, with convenient console commands, to easily call Craft service methods on a collection of elements or values.",
+    "description": "Any other man stops and talks... But the walking man walks.",
     "version": "4.0.0",
     "keywords": [
         "craft",
